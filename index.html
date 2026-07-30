@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fayaz Shaik — Azure Data Engineer</title>
+<meta name="description" content="Fayaz Shaik — Azure Data Engineer specializing in Databricks, PySpark, Delta Lake and Medallion Architecture pipelines.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0B2026;
+    --bg-panel: #12262D;
+    --bg-panel-2: #17303A;
+    --ink: #F3F6F7;
+    --ink-soft: #93A8AF;
+    --line: #21414A;
+    --lava: #FF3621;
+    --lava-dim: #C1440E;
+    --amber: #FFAB1A;
+    --silver: #8FA3AC;
+    --radius: 14px;
+  }
+
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  html{ scroll-behavior: smooth; }
+  body{
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6;
+    overflow-x: hidden;
+    position: relative;
+  }
+  a{ color: inherit; text-decoration:none; }
+  .mono{ font-family:'JetBrains Mono', monospace; }
+
+  .bg-grid{
+    position: fixed; inset:0;
+    background-image: radial-gradient(circle, rgba(255,54,33,0.10) 1px, transparent 1px);
+    background-size: 26px 26px;
+    z-index: 0;
+    pointer-events: none;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 20%, black 40%, transparent 100%);
+  }
+  .glow{
+    position: fixed;
+    top: -200px; left: 50%;
+    width: 800px; height: 600px;
+    transform: translateX(-50%);
+    background: radial-gradient(ellipse, rgba(255,54,33,0.16), transparent 65%);
+    z-index: 0;
+    pointer-events: none;
+    animation: pulse 8s ease-in-out infinite;
+  }
+  @keyframes pulse{ 0%,100%{ opacity:.8; } 50%{ opacity:1; } }
+
+  .wrap{ max-width: 920px; margin: 0 auto; padding: 0 32px; position: relative; z-index: 1; }
+
+  .spine{
+    position: fixed; top: 0; left: 50%;
+    transform: translateX(-460px);
+    width: 3px; height: 100%;
+    background: var(--line);
+    z-index: 5;
+  }
+  .spine-fill{
+    position: absolute; top:0; left:0; width:100%; height:0%;
+    background: linear-gradient(180deg, var(--lava-dim) 0%, var(--silver) 50%, var(--amber) 100%);
+    box-shadow: 0 0 12px rgba(255,54,33,.4);
+    transition: height .1s linear;
+  }
+  .spine-node{
+    position:absolute; left:50%; transform: translate(-50%,-50%);
+    width:13px; height:13px; border-radius:50%;
+    background: var(--bg-panel);
+    border: 2.5px solid var(--line);
+    transition: all .3s ease;
+    z-index:6; cursor:pointer;
+  }
+  .spine-node.active{
+    border-color: var(--tier-color, var(--lava));
+    box-shadow: 0 0 0 5px color-mix(in srgb, var(--tier-color, var(--lava)) 20%, transparent), 0 0 10px var(--tier-color, var(--lava));
+  }
+  .spine-node .node-label{
+    position:absolute; left:26px; top:50%; transform: translateY(-50%);
+    white-space:nowrap; font-family:'JetBrains Mono', monospace;
+    font-size:11px; letter-spacing:.06em; text-transform:uppercase;
+    color: var(--ink-soft); opacity:0; transition: opacity .3s ease;
+  }
+  .spine-node.active .node-label{ opacity:1; color: var(--tier-color, var(--lava)); }
+  @media (max-width: 980px){ .spine{ display:none; } }
+
+  .reveal{ opacity:0; transform: translateY(24px); transition: all .7s cubic-bezier(.2,.7,.3,1); }
+  .reveal.in{ opacity:1; transform: translateY(0); }
+
+  header{ padding: 120px 0 90px; position: relative; }
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace; font-size:12.5px;
+    letter-spacing:.12em; text-transform:uppercase; color: var(--lava);
+    background: rgba(255,54,33,0.1); border: 1px solid rgba(255,54,33,.3);
+    display:inline-block; padding:5px 12px; border-radius:100px; margin-bottom:24px;
+  }
+  .hero-grid{ display:block; }
+  h1{
+    font-family:'Space Grotesk', sans-serif; font-weight:700;
+    font-size: clamp(2.4rem, 5vw, 3.4rem); line-height:1.08; letter-spacing:-.01em; margin-bottom:18px;
+  }
+  h1 .accent{
+    background: linear-gradient(90deg, var(--lava), var(--amber));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .hero-role{ font-size:1.1rem; color: var(--ink-soft); max-width:520px; margin-bottom:22px; }
+
+  .terminal{
+    background: #081418; border: 1px solid var(--line); border-radius: 10px;
+    padding: 14px 16px; font-family:'JetBrains Mono', monospace; font-size: 12.5px;
+    color: #7EEBA0; max-width: 520px; margin-bottom: 26px;
+    box-shadow: inset 0 0 20px rgba(0,0,0,.3);
+  }
+  .terminal .prompt{ color: var(--lava); }
+  .terminal .cursor{ display:inline-block; width:7px; height:14px; background:#7EEBA0; margin-left:2px; animation: blink 1s step-end infinite; vertical-align: -2px; }
+  @keyframes blink{ 50%{ opacity:0; } }
+
+  .hero-tags{ display:flex; flex-wrap:wrap; gap:8px; }
+  .pill{
+    font-family:'JetBrains Mono', monospace; font-size:12px; padding:6px 12px;
+    border-radius:100px; border:1px solid var(--line); color: var(--ink-soft); background: var(--bg-panel);
+  }
+  @media (max-width:700px){
+    .hero-tags{ justify-content:center; }
+  }
+
+  section{ padding:90px 0; border-top:1px solid var(--line); }
+  .section-head{ display:flex; align-items:baseline; gap:14px; margin-bottom:44px; }
+  .section-num{
+    font-family:'JetBrains Mono', monospace; font-size:13px; color: var(--tier-color);
+    border:1px solid var(--tier-color); border-radius:50%; width:30px; height:30px;
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  }
+  .section-title{ font-family:'Space Grotesk', sans-serif; font-weight:600; font-size:1.7rem; }
+  .section-sub{ font-family:'JetBrains Mono', monospace; font-size:11.5px; text-transform:uppercase; letter-spacing:.08em; color: var(--ink-soft); }
+
+  #about .section-num{ --tier-color: var(--lava-dim); }
+  #skills .section-num{ --tier-color: var(--silver); }
+  #experience .section-num{ --tier-color: var(--amber); }
+  #certs .section-num{ --tier-color: var(--lava); }
+
+  .about-text{ font-size:1.08rem; color: var(--ink-soft); max-width:680px; margin-bottom:24px; }
+  .about-text strong{ color: var(--ink); font-weight:600; }
+
+  .stat-row{ display:flex; gap:40px; flex-wrap:wrap; margin-top:32px; }
+  .stat b{ display:block; font-family:'Space Grotesk', sans-serif; font-size:1.9rem; font-weight:700; color: var(--lava); }
+  .stat span{ font-family:'JetBrains Mono', monospace; font-size:11.5px; text-transform:uppercase; letter-spacing:.06em; color: var(--ink-soft); }
+
+  .pipeline-demo{
+    margin-top: 40px; background: var(--bg-panel); border:1px solid var(--line); border-radius: var(--radius);
+    padding: 26px;
+  }
+  .pipeline-demo-head{ display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px; flex-wrap:wrap; gap:12px; }
+  .pipeline-demo-head h4{ font-family:'Space Grotesk', sans-serif; font-size: 1rem; font-weight: 500; }
+  .run-btn{
+    font-family:'JetBrains Mono', monospace; font-size:12.5px; padding:10px 18px; border-radius:100px;
+    border:1px solid var(--lava); background: rgba(255,54,33,.12); color: var(--lava); cursor:pointer;
+    transition: all .2s ease;
+  }
+  .run-btn:hover{ background: var(--lava); color:#fff; }
+  .run-btn:disabled{ opacity:.5; cursor:default; }
+  .pipeline-track{ position:relative; height: 70px; }
+  .pipeline-line{ position:absolute; top:50%; left:0; right:0; height:3px; background: var(--line); transform: translateY(-50%); border-radius:2px; }
+  .pipeline-stage{
+    position:absolute; top:50%; transform: translate(-50%,-50%);
+    width:56px; height:56px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'JetBrains Mono', monospace; font-size:10.5px; text-transform:uppercase; letter-spacing:.03em;
+    background: var(--bg-panel-2); border:2px solid var(--line); color: var(--ink-soft);
+    transition: all .3s ease;
+  }
+  .pipeline-stage.active{ color:#fff; }
+  .pipeline-stage[data-stage="bronze"]{ left:8%; }
+  .pipeline-stage[data-stage="silver"]{ left:38%; }
+  .pipeline-stage[data-stage="gold"]{ left:68%; }
+  .pipeline-stage[data-stage="serve"]{ left:94%; }
+  .pipeline-stage.active[data-stage="bronze"]{ border-color: var(--lava-dim); background: var(--lava-dim); }
+  .pipeline-stage.active[data-stage="silver"]{ border-color: var(--silver); background: var(--silver); color:#0B2026; }
+  .pipeline-stage.active[data-stage="gold"]{ border-color: var(--amber); background: var(--amber); color:#0B2026; }
+  .pipeline-stage.active[data-stage="serve"]{ border-color: var(--lava); background: var(--lava); }
+  .pipeline-dot{
+    position:absolute; top:50%; width:10px; height:10px; border-radius:50%;
+    background: var(--lava); box-shadow:0 0 10px rgba(255,54,33,.8);
+    transform: translate(-50%,-50%); left:8%; opacity:0; transition: left 2.4s linear, opacity .2s ease;
+  }
+  .pipeline-status{ font-family:'JetBrains Mono', monospace; font-size:12px; color: var(--ink-soft); margin-top: 12px; min-height: 18px; }
+  .pipeline-status .count{ color: var(--amber); }
+
+  .skill-groups{ display:grid; grid-template-columns:repeat(2,1fr); gap:22px; }
+  @media (max-width:700px){ .skill-groups{ grid-template-columns:1fr; } }
+  .skill-card{
+    background: var(--bg-panel); border:1px solid var(--line); border-radius: var(--radius);
+    padding:24px; transition: transform .25s ease, border-color .25s ease;
+    transform-style: preserve-3d;
+  }
+  .skill-card:hover{ border-color: rgba(255,54,33,.35); }
+  .skill-card h3{ font-family:'Space Grotesk', sans-serif; font-size:1rem; margin-bottom:16px; font-weight: 500; }
+  .skill-tags{ display:flex; flex-wrap:wrap; gap:8px; }
+  .skill-tag{
+    font-family:'JetBrains Mono', monospace; font-size:12px; padding:6px 11px; border-radius:8px;
+    background: var(--bg-panel-2); border:1px solid var(--line); color: var(--ink-soft);
+    transition: all .18s ease; cursor:default;
+  }
+  .skill-tag:hover{ border-color: var(--lava); color:#fff; background: rgba(255,54,33,.15); transform: translateY(-2px); }
+
+  .job{ border-bottom:1px solid var(--line); padding:28px 0; cursor:pointer; }
+  .job:last-child{ border-bottom:none; }
+  .job-head{ display:flex; justify-content:space-between; align-items:center; gap:16px; }
+  .job-title{ font-family:'Space Grotesk', sans-serif; font-weight:600; font-size:1.15rem; }
+  .job-meta{ font-family:'JetBrains Mono', monospace; font-size:12px; color: var(--ink-soft); margin-top:4px; }
+  .job-date{ font-family:'JetBrains Mono', monospace; font-size:12px; color: var(--amber); white-space:nowrap; flex-shrink:0; text-align:right; }
+  .job-toggle{ font-size:18px; color: var(--ink-soft); transition: transform .3s ease; margin-left:8px; }
+  .job.open .job-toggle{ transform: rotate(45deg); color: var(--lava); }
+  .job-body{ max-height:0; overflow:hidden; transition: max-height .35s ease; }
+  .job.open .job-body{ max-height:400px; }
+  .job-body ul{ margin:18px 0 0; padding-left:18px; color: var(--ink-soft); font-size:.96rem; }
+  .job-body li{ margin-bottom:8px; }
+  .job-body li::marker{ color: var(--lava); }
+
+  .cert-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+  @media (max-width:700px){ .cert-grid{ grid-template-columns:1fr; } }
+  .cert-card{ perspective:800px; height:130px; }
+  .cert-inner{ position:relative; width:100%; height:100%; transition: transform .5s cubic-bezier(.4,.2,.2,1); transform-style:preserve-3d; }
+  .cert-card:hover .cert-inner{ transform: rotateY(180deg); }
+  .cert-face{
+    position:absolute; inset:0; backface-visibility:hidden; border-radius: var(--radius);
+    border:1px solid var(--line); background: var(--bg-panel);
+    display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:16px;
+  }
+  .cert-face.front b{ font-family:'Space Grotesk', sans-serif; font-size:1.3rem; color: var(--lava); display:block; margin-bottom:6px; }
+  .cert-face.front span{ font-family:'JetBrains Mono', monospace; font-size:11px; color: var(--ink-soft); text-transform:uppercase; letter-spacing:.05em; }
+  .cert-face.back{ transform: rotateY(180deg); background: var(--bg-panel-2); font-size:.88rem; color: var(--ink); }
+
+  footer{ padding:80px 0 60px; text-align:center; }
+  footer h2{ font-family:'Space Grotesk', sans-serif; font-size:2rem; margin-bottom:16px; }
+  footer p{ color: var(--ink-soft); margin-bottom:32px; }
+  .contact-links{ display:flex; gap:14px; justify-content:center; flex-wrap:wrap; }
+  .btn{
+    font-family:'JetBrains Mono', monospace; font-size:13px; padding:12px 22px; border-radius:100px;
+    border:1px solid var(--line); background: var(--bg-panel); transition: all .2s ease;
+  }
+  .btn.primary{ background: var(--lava); color:#fff; border-color: var(--lava); }
+  .btn:hover{ transform: translateY(-2px); box-shadow: 0 6px 18px rgba(255,54,33,.25); }
+  .foot-note{ margin-top:50px; font-family:'JetBrains Mono', monospace; font-size:11px; color: var(--ink-soft); opacity:.7; }
+  .btn.copy{ cursor:pointer; position:relative; }
+  .copy-toast{
+    position:absolute; bottom:calc(100% + 8px); left:50%; transform: translateX(-50%);
+    background: var(--lava); color:#fff; font-family:'JetBrains Mono', monospace; font-size:11px;
+    padding:5px 10px; border-radius:6px; white-space:nowrap;
+    opacity:0; pointer-events:none; transition: opacity .2s ease;
+  }
+  .copy-toast.show{ opacity:1; }
+
+  @media (prefers-reduced-motion: reduce){ html{ scroll-behavior:auto; } *{ transition:none !important; animation:none !important; } }
+</style>
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="glow"></div>
+
+<div class="spine">
+  <div class="spine-fill" id="spineFill"></div>
+  <div class="spine-node" style="--tier-color: var(--lava-dim); top:14%" data-target="about"><span class="node-label">Bronze — About</span></div>
+  <div class="spine-node" style="--tier-color: var(--silver); top:38%" data-target="skills"><span class="node-label">Silver — Skills</span></div>
+  <div class="spine-node" style="--tier-color: var(--amber); top:65%" data-target="experience"><span class="node-label">Gold — Experience</span></div>
+  <div class="spine-node" style="--tier-color: var(--lava); top:88%" data-target="certs"><span class="node-label">Serving — Contact</span></div>
+</div>
+
+<div class="wrap">
+
+  <header>
+    <div class="hero-grid">
+      <div>
+        <span class="eyebrow">Open to opportunities · Serving notice period</span>
+        <h1>Fayaz Shaik<br>builds <span class="accent">Azure data pipelines</span> that scale.</h1>
+        <p class="hero-role">Azure Data Engineer with 4+ years designing end-to-end ETL/ELT pipelines on Azure Data Factory, Databricks, and Delta Lake — from raw ingestion to Bronze → Silver → Gold, production-ready.</p>
+        <div class="terminal">
+          <span class="prompt">fayaz@pipeline</span>:~$ <span id="typedLine"></span><span class="cursor"></span>
+        </div>
+        <div class="hero-tags">
+          <span class="pill">Databricks</span>
+          <span class="pill">PySpark</span>
+          <span class="pill">Delta Lake</span>
+          <span class="pill">Azure Data Factory</span>
+          <span class="pill">Medallion Architecture</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section id="about" class="reveal">
+    <div class="section-head">
+      <div class="section-num">01</div>
+      <div>
+        <div class="section-title">About</div>
+        <div class="section-sub">Bronze — raw material</div>
+      </div>
+    </div>
+    <p class="about-text">
+      I build <strong>scalable, high-performance data pipelines</strong> on Azure and Databricks — designing ETL/ELT workflows that turn raw, messy data into trusted, analytics-ready tables. My focus areas: <strong>Medallion Architecture</strong> (Bronze → Silver → Gold), <strong>incremental &amp; CDC-based loading</strong>, and pipeline security via Azure Key Vault and Managed Identity.
+    </p>
+    <p class="about-text">
+      Currently exploring <strong>Databricks Declarative Pipelines (SDP)</strong>, Streaming Tables, and Materialized Views — with domain experience spanning <strong>insurance, FMCG, and telecom</strong> data projects.
+    </p>
+    <div class="stat-row">
+      <div class="stat"><b>4+</b><span>Years experience</span></div>
+      <div class="stat"><b>3</b><span>Microsoft certifications</span></div>
+      <div class="stat"><b>3</b><span>Client domains</span></div>
+    </div>
+
+    <div class="pipeline-demo">
+      <div class="pipeline-demo-head">
+        <h4>Live demo — watch a record move through the medallion pipeline</h4>
+        <button class="run-btn" id="runBtn">▶ Run pipeline</button>
+      </div>
+      <div class="pipeline-track">
+        <div class="pipeline-line"></div>
+        <div class="pipeline-stage" data-stage="bronze">Bronze</div>
+        <div class="pipeline-stage" data-stage="silver">Silver</div>
+        <div class="pipeline-stage" data-stage="gold">Gold</div>
+        <div class="pipeline-stage" data-stage="serve">Serve</div>
+        <div class="pipeline-dot" id="pipelineDot"></div>
+      </div>
+      <div class="pipeline-status mono" id="pipelineStatus">Idle — click run to simulate a record flowing Bronze → Silver → Gold → Serving.</div>
+    </div>
+  </section>
+
+  <section id="skills" class="reveal">
+    <div class="section-head">
+      <div class="section-num">02</div>
+      <div>
+        <div class="section-title">Skills</div>
+        <div class="section-sub">Silver — cleaned &amp; conformed</div>
+      </div>
+    </div>
+    <div class="skill-groups">
+      <div class="skill-card" data-tilt>
+        <h3>Cloud &amp; Platform</h3>
+        <div class="skill-tags">
+          <span class="skill-tag">Azure Data Factory</span>
+          <span class="skill-tag">Azure Databricks</span>
+          <span class="skill-tag">ADLS Gen2</span>
+          <span class="skill-tag">Azure SQL DB</span>
+          <span class="skill-tag">Azure Key Vault</span>
+          <span class="skill-tag">Managed Identity</span>
+        </div>
+      </div>
+      <div class="skill-card" data-tilt>
+        <h3>Big Data &amp; Processing</h3>
+        <div class="skill-tags">
+          <span class="skill-tag">PySpark</span>
+          <span class="skill-tag">Spark SQL</span>
+          <span class="skill-tag">Delta Lake</span>
+          <span class="skill-tag">Streaming Tables</span>
+          <span class="skill-tag">Materialized Views</span>
+        </div>
+      </div>
+      <div class="skill-card" data-tilt>
+        <h3>Architecture &amp; Modeling</h3>
+        <div class="skill-tags">
+          <span class="skill-tag">Medallion Architecture</span>
+          <span class="skill-tag">Star Schema</span>
+          <span class="skill-tag">Snowflake Schema</span>
+          <span class="skill-tag">SCD Type 2</span>
+          <span class="skill-tag">Unity Catalog</span>
+        </div>
+      </div>
+      <div class="skill-card" data-tilt>
+        <h3>Tools &amp; DevOps</h3>
+        <div class="skill-tags">
+          <span class="skill-tag">Azure DevOps</span>
+          <span class="skill-tag">GitHub</span>
+          <span class="skill-tag">Jira</span>
+          <span class="skill-tag">ServiceNow</span>
+          <span class="skill-tag">Python</span>
+          <span class="skill-tag">SQL</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="experience" class="reveal">
+    <div class="section-head">
+      <div class="section-num">03</div>
+      <div>
+        <div class="section-title">Experience</div>
+        <div class="section-sub">Gold — analytics ready</div>
+      </div>
+    </div>
+
+    <div class="job open">
+      <div class="job-head">
+        <div>
+          <div class="job-title">Data Engineer</div>
+          <div class="job-meta">Infosys · Hyderabad</div>
+        </div>
+        <div class="job-date">Feb 2024 — Present<span class="job-toggle">+</span></div>
+      </div>
+      <div class="job-body">
+        <ul>
+          <li>Design and develop scalable ETL pipelines using Azure Data Factory and Databricks</li>
+          <li>Build ingestion pipelines from ADLS Gen2 and Azure SQL Database</li>
+          <li>Implement Medallion Architecture (Bronze, Silver, Gold) across multiple data sources</li>
+          <li>Use Delta Lake for ACID-compliant, optimized storage and improved query performance</li>
+          <li>Process large-scale datasets using PySpark and Spark SQL</li>
+          <li>Implement incremental data loading strategies to reduce pipeline run time</li>
+          <li>Integrate Azure Key Vault for secure credential management</li>
+          <li>Explore Declarative Pipeline (SDP) concepts, Streaming Tables, and Materialized Views</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="job">
+      <div class="job-head">
+        <div>
+          <div class="job-title">Associate Data Engineer</div>
+          <div class="job-meta">Infosys · Coimbatore</div>
+        </div>
+        <div class="job-date">May 2023 — Dec 2023<span class="job-toggle">+</span></div>
+      </div>
+      <div class="job-body">
+        <ul>
+          <li>Developed Python automation scripts to streamline manual workflows</li>
+          <li>Built reusable data processing utilities integrated with ServiceNow</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="job">
+      <div class="job-head">
+        <div>
+          <div class="job-title">Data Engineer</div>
+          <div class="job-meta">Infosys · Bengaluru</div>
+        </div>
+        <div class="job-date">Aug 2022 — Mar 2023<span class="job-toggle">+</span></div>
+      </div>
+      <div class="job-body">
+        <ul>
+          <li>Led a telecom data migration project involving large-scale record transformation</li>
+          <li>Designed SQL schemas and optimized queries for data validation</li>
+          <li>Ensured data consistency across multiple interconnected systems</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="certs" class="reveal">
+    <div class="section-head">
+      <div class="section-num">04</div>
+      <div>
+        <div class="section-title">Certifications</div>
+        <div class="section-sub">Serving layer — verified credentials</div>
+      </div>
+    </div>
+    <div class="cert-grid">
+      <div class="cert-card">
+        <div class="cert-inner">
+          <div class="cert-face front"><b>AZ-900</b><span>Azure Fundamentals</span></div>
+          <div class="cert-face back">Core Azure cloud concepts — services, pricing, and governance.</div>
+        </div>
+      </div>
+      <div class="cert-card">
+        <div class="cert-inner">
+          <div class="cert-face front"><b>DP-900</b><span>Azure Data Fundamentals</span></div>
+          <div class="cert-face back">Relational &amp; non-relational data, and core data workloads on Azure.</div>
+        </div>
+      </div>
+      <div class="cert-card">
+        <div class="cert-inner">
+          <div class="cert-face front"><b>DP-700</b><span>Fabric Data Engineer Associate</span></div>
+          <div class="cert-face back">Designing and implementing data engineering solutions on Microsoft Fabric.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer id="contact">
+    <h2>Let's build something.</h2>
+    <p>Open to Azure Data Engineer / Databricks roles — currently serving notice period.</p>
+    <div class="contact-links">
+      <a class="btn primary" href="mailto:fayazsk9440@gmail.com">Email me</a>
+      <button class="btn copy" id="copyBtn" type="button">
+        Copy email
+        <span class="copy-toast" id="copyToast">Copied!</span>
+      </button>
+      <a class="btn" href="https://www.linkedin.com/in/fayazshaik-80313118b" target="_blank" rel="noopener">LinkedIn</a>
+    </div>
+    <div class="foot-note">Bronze → Silver → Gold, one pipeline at a time.</div>
+  </footer>
+
+</div>
+
+<script>
+  const spineFill = document.getElementById('spineFill');
+  const nodes = document.querySelectorAll('.spine-node');
+  const sections = ['about','skills','experience','certs'].map(id => document.getElementById(id));
+
+  function onScroll(){
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const pct = Math.min(100, (scrollTop / docHeight) * 100);
+    spineFill.style.height = pct + '%';
+
+    let activeIdx = 0;
+    sections.forEach((sec, i) => {
+      const rect = sec.getBoundingClientRect();
+      if(rect.top < window.innerHeight * 0.5) activeIdx = i;
+    });
+    nodes.forEach((n, i) => n.classList.toggle('active', i === activeIdx));
+  }
+  window.addEventListener('scroll', onScroll);
+  onScroll();
+
+  nodes.forEach(n => {
+    n.addEventListener('click', () => {
+      document.getElementById(n.dataset.target).scrollIntoView({behavior:'smooth'});
+    });
+  });
+
+  document.querySelectorAll('.job').forEach(job => {
+    job.addEventListener('click', () => {
+      const isOpen = job.classList.contains('open');
+      document.querySelectorAll('.job').forEach(j => j.classList.remove('open'));
+      if(!isOpen) job.classList.add('open');
+    });
+  });
+
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('in'); });
+  }, { threshold: 0.15 });
+  revealEls.forEach(el => io.observe(el));
+
+  const lines = [
+    'spark.read.pipeline("bronze -> silver -> gold")',
+    'delta.optimize(table="orders_gold")',
+    'adf.trigger.run(pipeline="daily_ingest")'
+  ];
+  const typedEl = document.getElementById('typedLine');
+  let lineIdx = 0, charIdx = 0, deleting = false;
+  function typeLoop(){
+    const current = lines[lineIdx];
+    if(!deleting){
+      charIdx++;
+      typedEl.textContent = current.slice(0, charIdx);
+      if(charIdx === current.length){ deleting = true; setTimeout(typeLoop, 1600); return; }
+    } else {
+      charIdx--;
+      typedEl.textContent = current.slice(0, charIdx);
+      if(charIdx === 0){ deleting = false; lineIdx = (lineIdx+1) % lines.length; }
+    }
+    setTimeout(typeLoop, deleting ? 25 : 45);
+  }
+  typeLoop();
+
+  const runBtn = document.getElementById('runBtn');
+  const dot = document.getElementById('pipelineDot');
+  const status = document.getElementById('pipelineStatus');
+  const stages = document.querySelectorAll('.pipeline-stage');
+  const stagePositions = { bronze: '8%', silver: '38%', gold: '68%', serve: '94%' };
+  const stageMsgs = {
+    bronze: 'Ingesting raw record into Bronze layer...',
+    silver: 'Cleaning & conforming in Silver layer...',
+    gold: 'Aggregating business logic in Gold layer...',
+    serve: 'Record served — ready for analytics.'
+  };
+
+  runBtn.addEventListener('click', () => {
+    runBtn.disabled = true;
+    stages.forEach(s => s.classList.remove('active'));
+    dot.style.transition = 'none';
+    dot.style.left = '8%';
+    dot.style.opacity = '1';
+    void dot.offsetWidth;
+
+    const order = ['bronze','silver','gold','serve'];
+    order.forEach((stage, i) => {
+      setTimeout(() => {
+        document.querySelector(`.pipeline-stage[data-stage="${stage}"]`).classList.add('active');
+        status.innerHTML = stageMsgs[stage];
+        dot.style.transition = 'left 2.4s linear';
+        if(i < order.length - 1){ dot.style.left = stagePositions[order[i+1]]; }
+      }, i * 900);
+    });
+
+    setTimeout(() => {
+      dot.style.opacity = '0';
+      status.innerHTML = 'Done — record moved <span class="count">Bronze → Silver → Gold → Serving</span> successfully.';
+      runBtn.disabled = false;
+    }, order.length * 900 + 400);
+  });
+
+  const copyBtn = document.getElementById('copyBtn');
+  const copyToast = document.getElementById('copyToast');
+  if(copyBtn){
+    copyBtn.addEventListener('click', async () => {
+      try{
+        await navigator.clipboard.writeText('fayazsk9440@gmail.com');
+      }catch(e){
+        const ta = document.createElement('textarea');
+        ta.value = 'fayazsk9440@gmail.com';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+      }
+      copyToast.classList.add('show');
+      setTimeout(() => copyToast.classList.remove('show'), 1600);
+    });
+  }
+
+  document.querySelectorAll('[data-tilt]').forEach(card => {
+    card.addEventListener('mousemove', (e) => {
+      const r = card.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width - 0.5;
+      const y = (e.clientY - r.top) / r.height - 0.5;
+      card.style.transform = `perspective(600px) rotateX(${-y*4}deg) rotateY(${x*4}deg) translateY(-2px)`;
+    });
+    card.addEventListener('mouseleave', () => { card.style.transform = ''; });
+  });
+</script>
+
+</body>
+</html>
