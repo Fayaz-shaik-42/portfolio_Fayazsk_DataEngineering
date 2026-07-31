@@ -5,6 +5,23 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Fayaz Shaik — Azure Data Engineer</title>
 <meta name="description" content="Fayaz Shaik — Azure Data Engineer specializing in Databricks, PySpark, Delta Lake and Medallion Architecture pipelines.">
+
+<!-- Favicon: "FS" monogram -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230B2026'/%3E%3Ctext x='32' y='42' font-family='Arial, sans-serif' font-size='28' font-weight='700' fill='%23FF3621' text-anchor='middle'%3EFS%3C/text%3E%3C/svg%3E">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="Fayaz Shaik — Azure Data Engineer">
+<meta property="og:description" content="4+ years building Azure data pipelines with Databricks, PySpark, Delta Lake and Medallion Architecture.">
+<meta property="og:url" content="https://fayaz-shaik-42.github.io/portfolio_Fayazsk_DataEngineering/">
+<meta property="og:image" content="https://fayaz-shaik-42.github.io/portfolio_Fayazsk_DataEngineering/assets/og-image.png">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Fayaz Shaik — Azure Data Engineer">
+<meta name="twitter:description" content="4+ years building Azure data pipelines with Databricks, PySpark, Delta Lake and Medallion Architecture.">
+<meta name="twitter:image" content="https://fayaz-shaik-42.github.io/portfolio_Fayazsk_DataEngineering/assets/og-image.png">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -259,6 +276,53 @@
   }
   .copy-toast.show{ opacity:1; }
 
+  /* ---------- Pinned floating contact widget ---------- */
+  .float-contact{
+    position: fixed;
+    right: 24px;
+    bottom: 24px;
+    z-index: 50;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-end;
+  }
+  .fc-btn{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--bg-panel);
+    border: 1px solid var(--line);
+    color: var(--ink);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    padding: 10px 16px;
+    border-radius: 100px;
+    cursor: pointer;
+    box-shadow: 0 6px 18px rgba(0,0,0,.35);
+    transition: all .2s ease;
+    position: relative;
+    white-space: nowrap;
+  }
+  .fc-btn:hover{ border-color: var(--lava); transform: translateY(-2px); box-shadow: 0 8px 22px rgba(255,54,33,.25); }
+  .fc-btn.linkedin:hover{ border-color: #0A66C2; box-shadow: 0 8px 22px rgba(10,102,194,.25); }
+  .fc-btn.resume{ border-color: rgba(255,171,26,.4); }
+  .fc-btn.resume:hover{ border-color: var(--amber); box-shadow: 0 8px 22px rgba(255,171,26,.25); }
+  .fc-icon{ font-size: 14px; line-height: 1; }
+  .fc-toast{
+    position:absolute; right: calc(100% + 10px); top:50%; transform: translateY(-50%);
+    background: var(--lava); color:#fff; font-family:'JetBrains Mono', monospace; font-size:11px;
+    padding:5px 10px; border-radius:6px; white-space:nowrap;
+    opacity:0; pointer-events:none; transition: opacity .2s ease;
+  }
+  .fc-toast.show{ opacity:1; }
+
+  @media (max-width: 640px){
+    .float-contact{ right:16px; bottom:16px; gap:8px; }
+    .fc-btn{ padding: 12px; border-radius:50%; width:46px; height:46px; justify-content:center; }
+    .fc-label{ display:none; }
+  }
+
   @media (prefers-reduced-motion: reduce){ html{ scroll-behavior:auto; } *{ transition:none !important; animation:none !important; } }
 </style>
 </head>
@@ -273,6 +337,19 @@
   <div class="spine-node" style="--tier-color: var(--silver); top:38%" data-target="skills"><span class="node-label">Silver — Skills</span></div>
   <div class="spine-node" style="--tier-color: var(--amber); top:65%" data-target="experience"><span class="node-label">Gold — Experience</span></div>
   <div class="spine-node" style="--tier-color: var(--lava); top:88%" data-target="certs"><span class="node-label">Serving — Contact</span></div>
+</div>
+
+<div class="float-contact">
+  <a class="fc-btn resume" href="assets/Fayaz_Shaik_Resume.pdf" download>
+    <span class="fc-icon">⬇</span><span class="fc-label">Resume</span>
+  </a>
+  <button class="fc-btn email" id="fcEmailBtn" type="button">
+    <span class="fc-icon">✉</span><span class="fc-label">Copy email</span>
+    <span class="fc-toast" id="fcToast">Copied!</span>
+  </button>
+  <a class="fc-btn linkedin" href="https://www.linkedin.com/in/fayazshaik-80313118b" target="_blank" rel="noopener">
+    <span class="fc-icon">in</span><span class="fc-label">LinkedIn</span>
+  </a>
 </div>
 
 <div class="wrap">
@@ -487,7 +564,8 @@
     <h2>Let's build something.</h2>
     <p>Open to Azure Data Engineer / Databricks roles — currently serving notice period.</p>
     <div class="contact-links">
-      <a class="btn primary" href="mailto:fayazsk9440@gmail.com">Email me</a>
+      <a class="btn primary" href="assets/Fayaz_Shaik_Resume.pdf" download>⬇ Download Resume</a>
+      <a class="btn" href="mailto:fayazsk9440@gmail.com">Email me</a>
       <button class="btn copy" id="copyBtn" type="button">
         Copy email
         <span class="copy-toast" id="copyToast">Copied!</span>
@@ -615,6 +693,25 @@
       }
       copyToast.classList.add('show');
       setTimeout(() => copyToast.classList.remove('show'), 1600);
+    });
+  }
+
+  const fcEmailBtn = document.getElementById('fcEmailBtn');
+  const fcToast = document.getElementById('fcToast');
+  if(fcEmailBtn){
+    fcEmailBtn.addEventListener('click', async () => {
+      try{
+        await navigator.clipboard.writeText('fayazsk9440@gmail.com');
+      }catch(e){
+        const ta = document.createElement('textarea');
+        ta.value = 'fayazsk9440@gmail.com';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+      }
+      fcToast.classList.add('show');
+      setTimeout(() => fcToast.classList.remove('show'), 1600);
     });
   }
 
